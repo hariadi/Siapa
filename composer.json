@@ -1,6 +1,6 @@
 {
     "name": "hariadi/siapa",
-    "description": "A string manipulation library with multibyte support",
+    "description": "A simple PHP library for parsing complex Malay names into their individual components",
     "keywords": [
         "malay", "name", "parser", "gender", "methods", "utf-8",
         "helpers", "utils", "utf"
