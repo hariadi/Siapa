@@ -10,11 +10,11 @@ Malay Name Parser: A simple script for parsing complex Malay names into their in
 ## Example Usage
 
 ```php
-$siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Hinta");
-echo $siapa->salutation();
-echo $siapa->first();
-echo $siapa->last();
-echo $siapa->gender(); // not very accurate
+$siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Bin Hinta");
+echo $siapa->salutation(); // Dato&#039; Dr. Ir Hj.
+echo $siapa->first(); // Hariadi
+echo $siapa->last(); // Bin Hinta
+echo $siapa->gender(); // M (not very accurate ;p)
 ```
 
 ## Requiring/Loading
@@ -91,15 +91,22 @@ Siapa::name('Hariadi Hinta', 'UTF-8')->last(); // Hinta
 
 #### gender
 
-$siapa->gender()
+$siapa->gender(boolean $short)
 
-Siapa::gender()
+Siapa::gender(boolean $short)
 
-Returns the gender of name.
+Returns the gender of name. Default param is `true` for short gender (M for Male and F for Female).
 
 ```php
 Siapa::name('Hariadi Hinta', 'UTF-8')->gender(false); // Male
 ```
+
+Algorithm to detect malay name gender:
+0. Default gender is Male
+1. Check if `Binti`, `Bte.`, `Bte`, `Puan`, `Puan`, `Pn.`, `Bt.`, `Bt`, `A/P` exist in first name
+2. If not found then we check for salutation if `Hajah`, `Hajjah`, `Hjh.`, `Puan`, `Pn.`, `Cik` exist.
+3. If not found then we check for common female malay name in [`female.txt`](https://github.com/hariadi/Siapa/blob/master/src/data/female.txt) library
+
 
 ## Tests
 

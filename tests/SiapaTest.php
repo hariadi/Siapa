@@ -56,7 +56,7 @@ class SiapaTestCase extends PHPUnit_Framework_TestCase
 
     public function testMultiSalutation()
     {
-        $siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Hinta");
+        $siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Bin Hinta");
         $this->assertInstanceOf('Hariadi\Siapa', $siapa);
         $result = $siapa->salutation();
         $this->assertEquals(htmlspecialchars("Dato' Dr. Ir Hj.", ENT_QUOTES), $result);
