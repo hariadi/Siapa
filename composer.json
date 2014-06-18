@@ -25,7 +25,7 @@
         "source": "https://github.com/hariadi/Siapa"
     },
     "autoload": {
-        "psr-4": { "Hariadi\\Siapa\\": "src/" },
+        "psr-4": { "Siapa\\": "src/" },
         "classmap": [ "tests" ]
     }
 }
