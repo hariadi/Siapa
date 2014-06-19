@@ -60,12 +60,34 @@ class Siapa
         'a/p'
     );
 
-    private $female = array('Binti ', 'Bte. ', 'Bte ', 'Puan ', 'Puan ', 'Pn. ', 'Bt. ', 'Bt ', 'A/P ');
+    private $female = array(
+        'Binti ',
+        'Bte. ',
+        'Bte ',
+        'Puan ',
+        'Puan ',
+        'Pn. ',
+        'Bt. ',
+        'Bt ',
+        'A/P '
+    );
 
     private $salutation;
     private $first;
     private $last;
 
+    /**
+    * Initializes Siapa object and assigns both name and encoding properties
+    * the supplied values. $name is cast to a string prior to assignment, and 
+    * if $encoding is not specified, it defaults to mb_internal_encoding(). 
+    * Throws an InvalidArgumentException if the first argument is an array or 
+    * object without a __toString method.
+    *
+    * @param mixed $name Value to modify, after being cast to string
+    * @param string $encoding The character encoding
+    * @throws \InvalidArgumentException if an array or object without a
+    * __toString method is passed as the first argument
+    */
     public function __construct($name, $encoding = null)
     {
         if (is_array($name)) {
@@ -82,67 +104,144 @@ class Siapa
         $this->parser();
     }
 
+    /**
+    * Initializes Siapa object and assigns both name and encoding properties
+    * the supplied values. $name is cast to a string prior to assignment, and 
+    * if $encoding is not specified, it defaults to mb_internal_encoding(). 
+    * Throws an InvalidArgumentException if the first argument is an array or 
+    * object without a __toString method.
+    *
+    * @param mixed $name Value to modify, after being cast to string
+    * @param string $encoding The character encoding
+    * @throws \InvalidArgumentException if an array or object without a
+    * __toString method is passed as the first argument
+    */
     public static function name($name, $encoding = null)
     {
         return new static($name, $encoding);
     }
 
+    /**
+    * Returns the value in $name.
+    *
+    * @return string The current value of the $name property
+    */
     public function __toString()
     {
         return $this->name;
     }
 
+    /**
+    * Adds an element at the end of the salutation collection.
+    *
+    * @param mixed $salute The element to add.
+    *
+    * @return array.
+    */
     public function setSalutation($salute)
     {
         return $this->addSalutation($salute);
     }
 
+    /**
+    * Adds an element at the end of the middle collection.
+    *
+    * @param mixed $middle The element to add.
+    *
+    * @return array.
+    */
     public function setMiddle($middle)
     {
         return $this->addMiddle($middle);
     }
 
+    /**
+    * Returns the encoding used by the Siapa object.
+    *
+    * @return string The current value of the $encoding property
+    */
     public function getEncoding()
     {
         return $this->encoding;
     }
 
+    /**
+    * Gets all values of the female name collection.
+    *
+    * @return array The values of all female name in the collection
+    */
     public function getFemaleNames()
     {
         return file( __DIR__ . '/data/female.txt');
     }
 
+    /**
+    * Returns the value in $name. The name always include their middle.
+    *
+    * @return string The current value of the $name property
+    */
     public function nama()
     {
         return self::givenName();
     }
 
+    /**
+    * Returns the value in $name with or without middle.
+    *
+    * @param Boolen $middle
+    *
+    * @return string The current value of the $name property
+    */
     public function givenName($middle = false)
     {
-        $givenName = $this->name;
+        $givenName = $this->first . ' ' . $this->last;
+        
         if (!$middle) {
             foreach ($this->middles as $mid) {
-                $givenName = str_replace($mid, '', $givenName);
+                $givenName = str_replace(ucfirst($mid) . ' ', '', $givenName);
             }
         }
-        return htmlspecialchars_decode(trim($givenName));
+        return htmlspecialchars_decode(trim($givenName), ENT_QUOTES);
     }
 
+    /**
+    * Get the salutation from full name.
+    *
+    * @return string The current value of the $salutation property
+    */
     public function salutation()
     {
-        return htmlspecialchars_decode($this->salutation);
+        return htmlspecialchars_decode($this->salutation, ENT_QUOTES);
     }
 
+    /**
+    * Get the first name from full name.
+    *
+    * @return string The current value of the $first property
+    */
     public function first()
     {
-        return htmlspecialchars_decode($this->first);
+        return htmlspecialchars_decode($this->first, ENT_QUOTES);
     }
 
+    /**
+    * Get the last name from full name.
+    *
+    * @return string The current value of the $last property
+    */
     public function last()
     {
-        return htmlspecialchars_decode($this->last);
+        return htmlspecialchars_decode($this->last, ENT_QUOTES);
     }
 
+    /**
+    * Get the gender from full name. Gender are check from their middle name,
+    * salutation and collection of female name.
+    *
+    * @param Boolen $short F for Female and M for Male
+    *
+    * @return string 
+    */
     public function gender($short = true)
     {
         $gender = 'Male';
@@ -173,10 +272,15 @@ class Siapa
                     break;
                 }
             }
-        } 
+        }
         return ($short) ? $gender{0} : $gender;
     }
 
+    /**
+    * Returns the length of the name.
+    *
+    * @return int The number of characters in the name
+    */
     public function count()
     {
         return $this->length();
@@ -192,18 +296,19 @@ class Siapa
         return mb_strlen($this->name, $this->encoding);
     }
 
+    /**
+    * Parsing complex Malay names into their individual components
+    */
     private function parser() {
 
         $full_name = $this->name;
 
         $full_name = trim(str_replace('  ', ' ', $full_name));
-        $full_name = htmlspecialchars($full_name, ENT_QUOTES);
+        $full_name = htmlspecialchars_decode(htmlspecialchars($full_name, ENT_QUOTES));
 
         //before explode, we need to exract salutation
         $full_name = strtolower($full_name);
         foreach ($this->salutations as $salute) {
-
-            //var_dump($full_name);
 
             // salutation must start from position 0
             // if salutation found but start from > 0 then that they father salutation
@@ -259,6 +364,13 @@ class Siapa
         $this->last = trim($this->last);
     }
 
+    /**
+    * Adds an salutation element at the end of the collection.
+    *
+    * @param mixed $salute The salutation to add.
+    *
+    * @return boolean Always TRUE.
+    */
     private function addSalutation($salute)
     {
         if (is_array($salute)) {
@@ -270,6 +382,13 @@ class Siapa
         }
     }
 
+    /**
+    * Adds an middle element at the end of the collection.
+    *
+    * @param mixed $middle The middle to add.
+    *
+    * @return boolean Always TRUE.
+    */
     private function addMiddle($middle)
     {
         if (is_array($middle)) {
@@ -281,22 +400,39 @@ class Siapa
         }
     }
 
-    // detect compound last names like "Syed Cromok"
+    /**
+    * Check if middle exist in name
+    *
+    * @param String $word The middle to check.
+    *
+    * @return String middle name.
+    */
     private function is_middle($word) {
         $word = strtolower($word);
         return array_search($word,$this->middles);
     }
 
-    // detect mixed case words like "McDonald"
-    // returns false if the string is all one case
+    /**
+    * Detect mixed case words
+    *
+    * @param String $word The word to check.
+    *
+    * @return Boolean
+    */
     private function is_camel_case($word) {
         if (preg_match("|[A-Z]+|s", $word) && preg_match("|[a-z]+|s", $word))
             return true;
         return false;
     }
 
-    // ucfirst words split by dashes or periods
-    // ucfirst all upper/lower strings, but leave camelcase words alone
+    /**
+    * Normalize words. ucfirst words split by dashes or periods. 
+    * ucfirst all upper/lower strings, but leave camelcase words alone
+    *
+    * @param String $word The word to normalize.
+    *
+    * @return String
+    */
     private function fix_case($word) {
         // uppercase words split by dashes, like "Kimura-Fay"
         $word = $this->safe_ucfirst("-",$word);
@@ -308,14 +444,21 @@ class Siapa
         return $word;
     }
 
-    // helper public function for fix_case
-    public function safe_ucfirst($seperator, $word) {
-        // uppercase words split by the seperator (ex. dashes or periods)
-        $parts = explode($seperator,$word);
+    /**
+    * helper public function for fix_case
+    *
+    * @param String $separator The separator.
+    * @param String $word The word to check.
+    *
+    * @return String
+    */
+    public function safe_ucfirst($separator, $word) {
+        // uppercase words split by the separator (ex. dashes or periods)
+        $parts = explode($separator,$word);
         foreach ($parts as $word) {
             $words[] = ($this->is_camel_case($word)) ? $word : ucfirst(strtolower($word));
         }
-        return implode($seperator,$words);
+        return implode($separator,$words);
     }
 
 }

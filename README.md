@@ -65,6 +65,18 @@ Returns salutation from full name.
 Siapa::name('Datuk Dr. Ir. Hariadi Hinta', 'UTF-8')->salutation(); // Datuk Dr. Ir.
 ```
 
+#### givenName
+
+$siapa->givenName()
+
+Siapa::givenName()
+
+Returns the combine of first and last name without salutation and optional with or witout middle name.
+
+```php
+Siapa::name('Dato\' Hariadi Bin Hinta', 'UTF-8')->givenName(false); // Hariadi Bin Hinta
+```
+
 #### first
 
 $siapa->first()
@@ -102,10 +114,10 @@ Siapa::name('Hariadi Hinta', 'UTF-8')->gender(false); // Male
 ```
 
 Algorithm to detect malay name gender:
-0. Default gender is Male
-1. Check if `Binti`, `Bte.`, `Bte`, `Puan`, `Puan`, `Pn.`, `Bt.`, `Bt`, `A/P` exist in first name
-2. If not found then we check for salutation if `Hajah`, `Hajjah`, `Hjh.`, `Puan`, `Pn.`, `Cik` exist.
-3. If not found then we check for common female malay name in [`female.txt`](https://github.com/hariadi/Siapa/blob/master/src/data/female.txt) library
+- Default gender is Male
+- Check if `Binti`, `Bte.`, `Bte`, `Puan`, `Puan`, `Pn.`, `Bt.`, `Bt`, `A/P` exist in first name
+- If not found then we check for salutation if `Hajah`, `Hajjah`, `Hjh.`, `Puan`, `Pn.`, `Cik` exist.
+- If not found then we check for common female malay name in [`female.txt`](https://github.com/hariadi/Siapa/blob/master/src/data/female.txt) library
 
 
 ## Tests

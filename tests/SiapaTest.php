@@ -46,6 +46,22 @@ class SiapaTestCase extends PHPUnit_Framework_TestCase
         $this->assertEquals('Hinta', $result);
     }
 
+    public function testGivenName()
+    {
+        $siapa = Siapa::name("En. Hariadi Bin Hinta");
+        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
+        $result = $siapa->givenName();
+        $this->assertEquals('Hariadi Hinta', $result);
+    }
+
+    public function testGivenNameWithMiddle()
+    {
+        $siapa = Siapa::name("En. Hariadi Bin Hinta");
+        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
+        $result = $siapa->givenName(true);
+        $this->assertEquals('Hariadi Bin Hinta', $result);
+    }
+
     public function testEncik()
     {
         $siapa = Siapa::name("en. hariadi hinta");
@@ -59,7 +75,7 @@ class SiapaTestCase extends PHPUnit_Framework_TestCase
         $siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Bin Hinta");
         $this->assertInstanceOf('Hariadi\Siapa', $siapa);
         $result = $siapa->salutation();
-        $this->assertEquals(htmlspecialchars("Dato' Dr. Ir Hj.", ENT_QUOTES), $result);
+        $this->assertEquals("Dato' Dr. Ir Hj.", $result);
     }
 
     public function testCountLibraryNames()
