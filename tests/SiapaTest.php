@@ -59,7 +59,7 @@ class SiapaTestCase extends PHPUnit_Framework_TestCase
         $siapa = Siapa::name("En. Hariadi Bin Hinta");
         $this->assertInstanceOf('Hariadi\Siapa', $siapa);
         $result = $siapa->givenName(true);
-        $this->assertEquals('Hariadi Bin Hinta', $result);
+        $this->assertEquals('Hariadi bin Hinta', $result);
     }
 
     public function testEncik()
