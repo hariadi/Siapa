@@ -60,6 +60,16 @@ class Siapa
         'a/p'
     );
 
+    private $patronym = array(
+        'binti',
+        'bte',
+        'bt.',
+        'bin',
+        'bt',
+        'a/l',
+        'a/p'
+    );
+
     private $female = array(
         'Binti ',
         'Bte. ',
@@ -197,8 +207,12 @@ class Siapa
         $givenName = $this->first . ' ' . $this->last;
         
         if (!$middle) {
-            foreach ($this->middles as $mid) {
+            foreach ($this->patronym as $mid) {
                 $givenName = str_replace(ucfirst($mid) . ' ', '', $givenName);
+            }
+        } else {
+            foreach ($this->patronym as $mid) {
+                $givenName = str_replace(ucfirst($mid), $mid, $givenName);
             }
         }
         return htmlspecialchars_decode(trim($givenName), ENT_QUOTES);
