@@ -11,10 +11,10 @@ Malay Name Parser: A simple script for parsing complex Malay names into their in
 
 ```php
 $siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Bin Hinta");
-echo $siapa->salutation(); // Dato&#039; Dr. Ir Hj.
+echo $siapa->salutation(); // Dato' Dr. Ir Hj.
 echo $siapa->first(); // Hariadi
 echo $siapa->last(); // Bin Hinta
-echo $siapa->gender(); // M (not very accurate ;p)
+echo $siapa->gender(); // M
 ```
 
 ## Requiring/Loading
@@ -46,7 +46,7 @@ of the former is the following:
 
 ```php
 use Hariadi\Siapa as Siapa;
-echo Siapa::name('Hariadi Hinta', 'UTF-8')->first();  // 'Hariadi'
+echo Siapa::name('Hariadi Hinta', 'UTF-8')->first();  // Hariadi
 ```
 
 ## Methods
