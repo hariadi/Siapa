@@ -2,10 +2,10 @@
 
 <phpunit processIsolation="false"
          stopOnFailure="false"
-         syntaxCheck="false">
+         colors="true">
     <testsuites>
         <testsuite name="Siapa">
-            <directory>tests</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

@@ -17,14 +17,12 @@ echo $siapa->last(); // Bin Hinta
 echo $siapa->gender(); // M
 ```
 
-## Requiring/Loading
+## Install
 
 If you're using Composer to manage dependencies, you can include the following
 in your composer.json file:
 
-    "require": {
-        "hariadi/siapa": ">=0.1.0"
-    }
+    `composer require hariadi/siapa`
 
 Then, after running `composer update` or `php composer.phar update`, you can
 load the class using Composer's autoloading:
@@ -45,7 +43,7 @@ The library offers both OO method chaining with `Hariadi\Siapa`. An example
 of the former is the following:
 
 ```php
-use Hariadi\Siapa as Siapa;
+use Hariadi\Siapa;
 echo Siapa::name('Hariadi Hinta', 'UTF-8')->first();  // Hariadi
 ```
 
@@ -55,9 +53,9 @@ echo Siapa::name('Hariadi Hinta', 'UTF-8')->first();  // Hariadi
 
 #### salutation
 
-$siapa->salutation()
+`$siapa->salutation()`
 
-Siapa::salutation()
+`Siapa::salutation()`
 
 Returns salutation from full name.
 
@@ -67,9 +65,7 @@ Siapa::name('Datuk Dr. Ir. Hariadi Hinta', 'UTF-8')->salutation(); // Datuk Dr. 
 
 #### givenName
 
-$siapa->givenName()
-
-Siapa::givenName()
+`Siapa::givenName()`
 
 Returns the combine of first and last name without salutation and optional with or witout middle name.
 
@@ -79,9 +75,7 @@ Siapa::name('Dato\' Hariadi Bin Hinta', 'UTF-8')->givenName(false); // Hariadi B
 
 #### first
 
-$siapa->first()
-
-Siapa::first()
+`Siapa::first()`
 
 Returns the first name.
 
@@ -91,9 +85,7 @@ Siapa::name('Hariadi Hinta', 'UTF-8')->first(); // Hariadi
 
 #### last
 
-$siapa->last()
-
-Siapa::last()
+`Siapa::last()`
 
 Returns the last name.
 
@@ -103,9 +95,7 @@ Siapa::name('Hariadi Hinta', 'UTF-8')->last(); // Hinta
 
 #### gender
 
-$siapa->gender(boolean $short)
-
-Siapa::gender(boolean $short)
+`Siapa::gender(boolean $short)`
 
 Returns the gender of name. Default param is `true` for short gender (M for Male and F for Female).
 

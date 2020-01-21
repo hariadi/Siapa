@@ -1,105 +1,87 @@
 <?php
 
-require __DIR__ . '/../src/Siapa.php';
+namespace Hariadi\Siapa;
 
-use Hariadi\Siapa as Siapa;
+use PHPUnit\Framework\TestCase;
 
-class SiapaTestCase extends PHPUnit_Framework_TestCase
+class SiapaTestCase extends TestCase
 {
-    public function testConstruct()
+    /**
+     * @return array
+     */
+    public function provider()
     {
-        $siapa = new Siapa('foo bar', 'UTF-8');
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $this->assertEquals('foo bar', (string) $siapa);
-        $this->assertEquals('UTF-8', $siapa->getEncoding());
+    	return [
+            [
+                'Hariadi Hinta',
+                [
+                    '',
+                    'Hariadi',
+                    'Hinta',
+                    'M',
+                    'Hariadi Hinta'
+                ]
+            ],
+            [
+                'En. Hariadi Hinta',
+                [
+                    'En.',
+                    'Hariadi',
+                    'Hinta',
+                    'M',
+                    'Hariadi Hinta'
+                ]
+            ],
+            [
+                'En. Hariadi bin Hinta',
+                [
+                    'En.',
+                    'Hariadi',
+                    'Bin Hinta',
+                    'M',
+                    'Hariadi Hinta'
+                ]
+            ],
+            [
+                'Dato\' Dr. Ir Hj. Hariadi Bin Hinta',
+                [
+                    'Dato\' Dr. Ir Hj.',
+                    'Hariadi',
+                    'Bin Hinta',
+                    'M',
+                    'Hariadi Hinta'
+                ]
+            ],
+            [
+                'pn. nur hariadi hinta',
+                [
+                    'Pn.',
+                    'Nur Hariadi',
+                    'Hinta',
+                    'F',
+                    'Nur Hariadi Hinta'
+                ]
+            ],
+        ];
     }
 
-    public function testSetName()
+    /**
+     * @dataProvider provider
+     *
+     * @param $input
+     * @param $expectation
+     */
+    public function testParse($input, $expectation)
     {
-        $siapa = Siapa::name('foo bar', 'UTF-8');
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $this->assertEquals('foo bar', (string) $siapa);
-        $this->assertEquals('UTF-8', $siapa->getEncoding());
-    }
+        $siapa = new Siapa($input);
 
-    public function testNoSalutation()
-    {
-        $siapa = Siapa::name("hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->salutation();
-        $this->assertEquals('', $result);
+        $this->assertInstanceOf(Siapa::class, $siapa);
+        $this->assertEquals($expectation, [
+        	$siapa->salutation(),
+        	$siapa->first(),
+        	$siapa->last(),
+        	$siapa->gender(),
+        	$siapa->givenName()
+        ]);
     }
-
-    public function testFirst()
-    {
-        $siapa = Siapa::name("En. hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->first();
-        $this->assertEquals('Hariadi', $result);
-    }
-
-    public function testLast()
-    {
-        $siapa = Siapa::name("En. hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->last();
-        $this->assertEquals('Hinta', $result);
-    }
-
-    public function testGivenName()
-    {
-        $siapa = Siapa::name("En. Hariadi Bin Hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->givenName();
-        $this->assertEquals('Hariadi Hinta', $result);
-    }
-
-    public function testGivenNameWithMiddle()
-    {
-        $siapa = Siapa::name("En. Hariadi Bin Hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->givenName(true);
-        $this->assertEquals('Hariadi bin Hinta', $result);
-    }
-
-    public function testEncik()
-    {
-        $siapa = Siapa::name("en. hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->salutation();
-        $this->assertEquals('En.', $result);
-    }
-
-    public function testMultiSalutation()
-    {
-        $siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Bin Hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->salutation();
-        $this->assertEquals("Dato' Dr. Ir Hj.", $result);
-    }
-
-    public function testCountLibraryNames()
-    {
-        $siapa = Siapa::name("en. hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->getFemaleNames();
-        $this->assertEquals(779, count($result));
-    }
-
-    public function testGenderFemale()
-    {
-        $siapa = Siapa::name("pn. nur hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->gender();
-        $this->assertEquals('F', $result);
-    }
-
-    public function testGenderMale()
-    {
-        $siapa = Siapa::name("hariadi hinta");
-        $this->assertInstanceOf('Hariadi\Siapa', $siapa);
-        $result = $siapa->gender();
-        $this->assertEquals('M', $result);
-    }
-    
 }
