@@ -1,4 +1,4 @@
-# Siapa [![Build Status](https://travis-ci.org/hariadi/Siapa.png)](https://travis-ci.org/hariadi/Siapa)
+# Siapa [![Build Status](https://github.com/hariadi/Siapa/workflows/PHP%20Composer/badge.svg)](https://github.com/hariadi/Siapa/actions) 
 
 Malay Name Parser: A simple script for parsing complex Malay names into their individual components.
 
