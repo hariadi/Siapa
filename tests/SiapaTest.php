@@ -4,14 +4,14 @@ namespace Hariadi\Siapa;
 
 use PHPUnit\Framework\TestCase;
 
-class SiapaTestCase extends TestCase
+class SiapaTest extends TestCase
 {
     /**
      * @return array
      */
-    public function provider()
+    public function provider(): array
     {
-    	return [
+        return [
             [
                 'Hariadi Hinta',
                 [
@@ -43,9 +43,9 @@ class SiapaTestCase extends TestCase
                 ]
             ],
             [
-                'Dato\' Dr. Ir Hj. Hariadi Bin Hinta',
+                'Dato\' Dr. Ir. Hj. Hariadi Bin Hinta',
                 [
-                    'Dato\' Dr. Ir Hj.',
+                    'Dato\' Dr. Ir. Hj.',
                     'Hariadi',
                     'Bin Hinta',
                     'M',
@@ -67,9 +67,6 @@ class SiapaTestCase extends TestCase
 
     /**
      * @dataProvider provider
-     *
-     * @param $input
-     * @param $expectation
      */
     public function testParse($input, $expectation)
     {
@@ -77,11 +74,11 @@ class SiapaTestCase extends TestCase
 
         $this->assertInstanceOf(Siapa::class, $siapa);
         $this->assertEquals($expectation, [
-        	$siapa->salutation(),
-        	$siapa->first(),
-        	$siapa->last(),
-        	$siapa->gender(),
-        	$siapa->givenName()
+            $siapa->salutation(),
+            $siapa->first(),
+            $siapa->last(),
+            $siapa->gender(),
+            $siapa->givenName()
         ]);
     }
 }
