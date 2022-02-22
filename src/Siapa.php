@@ -4,16 +4,16 @@ namespace Hariadi\Siapa;
 
 class Siapa
 {
-    private $salutations = [
+    protected array $salutations = [
         'tun',
         'toh puan',
-        'tan sri dato&#039;',
+        'tan sri dato\'',
         'tan sri haji',
         'tan sri hj.',
         'tan sri',
         'puan sri',
-        'dato&#039; sri',
-        'dato&#039; seri',
+        'dato\' sri',
+        'dato\' seri',
         'datuk seri',
         'datuk dr. ir.',
         'datuk dr ir.',
@@ -27,16 +27,16 @@ class Siapa
         'datin dr ir',
         'datin dr.',
         'datin dr',
-        'dato&#039; dr ir haji',
-        'dato&#039; dr. ir. haji',
-        'dato&#039; dr ir. haji',
-        'dato&#039; dr. ir haji',
-        'dato&#039; dr ir hj.',
-        'dato&#039; dr. ir. hj.',
-        'dato&#039; dr ir. hj.',
-        'dato&#039; dr. ir hj.',
-        'dato&#039; dr.',
-        'dato&#039;',
+        'dato\' dr ir haji',
+        'dato\' dr. ir. haji',
+        'dato\' dr ir. haji',
+        'dato\' dr. ir haji',
+        'dato\' dr ir hj.',
+        'dato\' dr. ir. hj.',
+        'dato\' dr ir. hj.',
+        'dato\' dr. ir hj.',
+        'dato\' dr.',
+        'dato\'',
         'datin',
         'encik',
         'puan',
@@ -47,7 +47,7 @@ class Siapa
         'dr.',
     ];
 
-    private $middles = [
+    protected array $middles = [
         'von',
         'binti',
         'mohamad',
@@ -60,7 +60,7 @@ class Siapa
         'a/p',
     ];
 
-    private $patronym = [
+    protected array $patronym = [
         'binti',
         'bte',
         'bt.',
@@ -70,7 +70,7 @@ class Siapa
         'a/p',
     ];
 
-    private $female = [
+    protected array $female = [
         'Binti ',
         'Bte. ',
         'Bte ',
@@ -82,11 +82,15 @@ class Siapa
         'A/P ',
     ];
 
-    private $salutation;
+    protected $name;
 
-    private $first;
+    protected $salutation;
 
-    private $last;
+    protected $first;
+
+    protected $last;
+
+    protected $encoding;
 
     /**
      * Initializes Siapa object and assigns both name and encoding properties
@@ -200,11 +204,11 @@ class Siapa
     /**
      * Returns the value in $name with or without middle.
      *
-     * @param Boolen $middle
+     * @param bool $middle
      *
      * @return string The current value of the $name property
      */
-    public function givenName($middle = false)
+    public function givenName(bool $middle = false): string
     {
         $givenName = $this->first.' '.$this->last;
 
@@ -224,10 +228,14 @@ class Siapa
     /**
      * Get the salutation from full name.
      *
-     * @return string The current value of the $salutation property
+     * @return ?string The current value of the $salutation property
      */
-    public function salutation()
+    public function salutation(): ?string
     {
+        if (is_null($this->salutation)) {
+            return null;
+        }
+
         return htmlspecialchars_decode($this->salutation, ENT_QUOTES);
     }
 
@@ -236,7 +244,7 @@ class Siapa
      *
      * @return string The current value of the $first property
      */
-    public function first()
+    public function first(): string
     {
         return htmlspecialchars_decode($this->first, ENT_QUOTES);
     }
@@ -246,7 +254,7 @@ class Siapa
      *
      * @return string The current value of the $last property
      */
-    public function last()
+    public function last(): string
     {
         return htmlspecialchars_decode($this->last, ENT_QUOTES);
     }
@@ -255,11 +263,11 @@ class Siapa
      * Get the gender from full name. Gender are check from their middle name,
      * salutation and collection of female name.
      *
-     * @param Boolen $short F for Female and M for Male
+     * @param bool $short F for Female and M for Male
      *
      * @return string
      */
-    public function gender($short = true)
+    public function gender(bool $short = true): string
     {
         $gender = 'Male';
 
@@ -267,6 +275,7 @@ class Siapa
         foreach ($this->female as $female) {
             if (strpos($this->last, $female) !== false) {
                 $gender = 'Female';
+
                 break;
             }
         }
@@ -274,8 +283,9 @@ class Siapa
         // check in salutation
         if ($gender != 'Female') {
             foreach (['Hajah', 'Hajjah', 'Hjh.', 'Puan', 'Pn.', 'Cik'] as $female) {
-                if (strpos($this->salutation, $female) !== false) {
+                if ($this->salutation && str_contains($this->salutation, $female)) {
                     $gender = 'Female';
+
                     break;
                 }
             }
@@ -284,14 +294,19 @@ class Siapa
         // then we check female common name
         if ($gender != 'Female') {
             foreach (self::getFemaleNames() as $female) {
-                if (strpos($this->first, $female) !== false) {
+                if (str_contains($this->first, $female)) {
                     $gender = 'Female';
+
                     break;
                 }
             }
         }
 
-        return ($short) ? $gender[0] : $gender;
+        if (! $short) {
+            return $gender;
+        }
+
+        return $gender[0];
     }
 
     /**
@@ -309,7 +324,7 @@ class Siapa
      *
      * @return int The number of characters in $name given the encoding
      */
-    public function length()
+    public function length(): int
     {
         return mb_strlen($this->name, $this->encoding);
     }
@@ -317,19 +332,20 @@ class Siapa
     /**
      * Parsing complex Malay names into their individual components.
      */
-    private function parser()
+    protected function parser()
     {
         $full_name = $this->name;
 
         $full_name = trim(str_replace('  ', ' ', $full_name));
         $full_name = htmlspecialchars_decode(htmlspecialchars($full_name, ENT_QUOTES));
 
-        //before explode, we need to exract salutation
+        //before explode, we need to extract salutation
         $full_name = strtolower($full_name);
+
         foreach ($this->salutations as $salute) {
             // salutation must start from position 0
             // if salutation found but start from > 0 then that they father salutation
-            if (strpos($full_name, $salute) !== false && strpos($full_name, $salute) === 0) {
+            if (str_contains($full_name, $salute) && str_starts_with($full_name, $salute)) {
                 $this->salutation = $this->fixCase($salute);
                 $full_name = str_replace($salute, '', $full_name);
             }
@@ -340,6 +356,7 @@ class Siapa
 
         // split into words
         $unfiltered_name_parts = explode(' ', $full_name);
+        $name_parts = [];
 
         // completely ignore any words in parentheses
         foreach ($unfiltered_name_parts as $word) {
@@ -384,13 +401,11 @@ class Siapa
     }
 
     /**
-     * Adds an salutation element at the end of the collection.
+     * Adds a salutation element at the end of the collection.
      *
      * @param mixed $salute The salutation to add.
-     *
-     * @return bool Always TRUE.
      */
-    private function addSalutation($salute)
+    protected function addSalutation($salute)
     {
         if (is_array($salute)) {
             foreach ($salute as $tabik) {
@@ -402,13 +417,11 @@ class Siapa
     }
 
     /**
-     * Adds an middle element at the end of the collection.
+     * Adds a middle element at the end of the collection.
      *
      * @param mixed $middle The middle to add.
-     *
-     * @return bool Always TRUE.
      */
-    private function addMiddle($middle)
+    protected function addMiddle($middle)
     {
         if (is_array($middle)) {
             foreach ($middle as $mid) {
@@ -426,7 +439,7 @@ class Siapa
      *
      * @return string middle name.
      */
-    private function isMiddle($word)
+    protected function isMiddle($word): string
     {
         $word = strtolower($word);
 
@@ -440,7 +453,7 @@ class Siapa
      *
      * @return bool
      */
-    private function isCamelcase($word)
+    protected function isCamelcase($word): bool
     {
         if (preg_match('|[A-Z]+|s', $word) && preg_match('|[a-z]+|s', $word)) {
             return true;
@@ -457,7 +470,7 @@ class Siapa
      *
      * @return string
      */
-    private function fixCase($word)
+    protected function fixCase($word): string
     {
         // uppercase words split by dashes, like "Kimura-Fay"
         $word = $this->safeUcfirst('-', $word);
@@ -475,13 +488,12 @@ class Siapa
      *
      * @param string $separator The separator.
      * @param string $word      The word to check.
-     *
-     * @return string
      */
-    public function safeUcfirst($separator, $word)
+    public function safeUcfirst($separator, $word): string
     {
         // uppercase words split by the separator (ex. dashes or periods)
         $parts = explode($separator, $word);
+
         foreach ($parts as $word) {
             $words[] = ($this->isCamelcase($word)) ? $word : ucfirst(strtolower($word));
         }
