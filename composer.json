@@ -28,10 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-        	"Hariadi\\Siapa\\": "src/",
-			"Hariadi\\Siapa\\Parser\\": "src/Parser/",
-			"Hariadi\\Siapa\\Support\\": "src/Support/",
-			"Hariadi\\Siapa\\Data\\": "src/Data/"
+        	"Hariadi\\Siapa\\": "src/"
         }
     },
     "autoload-dev": {
