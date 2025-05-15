@@ -1,11 +1,25 @@
 <?php
 
-namespace Hariadi\Siapa;
-
 use PHPUnit\Framework\TestCase;
+use Hariadi\Siapa\Siapa;
 
 class SiapaTest extends TestCase
 {
+    /**
+     * @dataProvider provider
+     */
+    public function testNameParsing(string $fullName, array $expected)
+    {
+        $siapa = new Siapa($fullName);
+        $parsed = $siapa->parse();
+
+        $this->assertSame($expected[0], $parsed['salutation']);
+        $this->assertSame($expected[1], $parsed['first']);
+        $this->assertSame($expected[2], $parsed['last']);
+        $this->assertSame($expected[3], $parsed['gender']);
+        $this->assertSame($expected[4], $parsed['first'] . ' ' . $parsed['last']);
+    }
+
     /**
      * @return array
      */
@@ -15,7 +29,7 @@ class SiapaTest extends TestCase
             [
                 'Hariadi Hinta',
                 [
-                    '',
+                    null,
                     'Hariadi',
                     'Hinta',
                     'M',
@@ -37,17 +51,17 @@ class SiapaTest extends TestCase
                 [
                     'En.',
                     'Hariadi',
-                    'Bin Hinta',
+                    'Hinta',
                     'M',
                     'Hariadi Hinta'
                 ]
             ],
             [
-                'Dato\' Dr. Ir. Hj. Hariadi Bin Hinta',
+                "Dato' Dr. Ir. Hj. Hariadi Bin Hinta",
                 [
-                    'Dato\' Dr. Ir. Hj.',
+                    "Dato' Dr. Ir. Hj.",
                     'Hariadi',
-                    'Bin Hinta',
+                    'Hinta',
                     'M',
                     'Hariadi Hinta'
                 ]
@@ -63,22 +77,5 @@ class SiapaTest extends TestCase
                 ]
             ],
         ];
-    }
-
-    /**
-     * @dataProvider provider
-     */
-    public function testParse($input, $expectation)
-    {
-        $siapa = new Siapa($input);
-
-        $this->assertInstanceOf(Siapa::class, $siapa);
-        $this->assertEquals($expectation, [
-            $siapa->salutation(),
-            $siapa->first(),
-            $siapa->last(),
-            $siapa->gender(),
-            $siapa->givenName()
-        ]);
     }
 }

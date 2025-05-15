@@ -1,120 +1,132 @@
-# Siapa [![Build Status](https://github.com/hariadi/Siapa/workflows/PHP%20Composer/badge.svg)](https://github.com/hariadi/Siapa/actions) 
+# Siapa&#x20;
 
-Malay Name Parser: A simple script for parsing complex Malay names into their individual components.
+**Malay Name Parser**
+A smart parser for extracting components from complex Malay names:
 
-- Salutation
-- First Name
-- Last Name
-- Gender
+* ✅ Salutation
+* ✅ First Name
+* ✅ Last Name (excluding patronyms like "bin"/"binti")
+* ✅ Gender detection
 
-## Example Usage
+---
+
+## 💡 Example Usage
 
 ```php
-$siapa = Siapa::name("Dato' Dr. Ir Hj. Hariadi Bin Hinta");
-echo $siapa->salutation(); // Dato' Dr. Ir Hj.
-echo $siapa->first(); // Hariadi
-echo $siapa->last(); // Bin Hinta
-echo $siapa->gender(); // M
+use Hariadi\Siapa\Siapa;
+
+$siapa = Siapa::name("Dato' Dr. Ir. Hj. Hariadi Bin Hinta");
+
+echo $siapa->salutation(); // Dato' Dr. Ir. Hj.
+echo $siapa->first();      // Hariadi
+echo $siapa->last();       // Hinta
+echo $siapa->gender();     // M
 ```
 
-## Install
+---
 
-If you're using Composer to manage dependencies, you can include the following
-in your composer.json file:
+## 📦 Install
 
-    `composer require hariadi/siapa`
+Install via Composer:
 
-Then, after running `composer update` or `php composer.phar update`, you can
-load the class using Composer's autoloading:
+```bash
+composer require hariadi/siapa
+```
+
+Then include the autoloader:
 
 ```php
 require 'vendor/autoload.php';
 ```
 
-Otherwise, you can simply require the file directly:
+Alternatively, require the class manually:
 
 ```php
 require_once 'path/to/Siapa/src/Siapa.php';
 ```
 
-## OO and Procedural
+---
 
-The library offers both OO method chaining with `Hariadi\Siapa`. An example
-of the former is the following:
-
-```php
-use Hariadi\Siapa;
-echo Siapa::name('Hariadi Hinta', 'UTF-8')->first();  // Hariadi
-```
-
-## Methods
-
-*Note: If `$encoding` is not given, it defaults to `mb_internal_encoding()`.*
-
-#### salutation
-
-`$siapa->salutation()`
-
-`Siapa::salutation()`
-
-Returns salutation from full name.
+## 🧱 Object-Oriented Usage
 
 ```php
-Siapa::name('Datuk Dr. Ir. Hariadi Hinta', 'UTF-8')->salutation(); // Datuk Dr. Ir.
+use Hariadi\Siapa\Siapa;
+
+$siapa = Siapa::name('Hariadi Hinta', 'UTF-8');
+echo $siapa->first(); // Hariadi
 ```
 
-#### givenName
+---
 
-`Siapa::givenName()`
+## 🧪 Methods
 
-Returns the combine of first and last name without salutation and optional with or witout middle name.
+> If `$encoding` is not provided, it defaults to `mb_internal_encoding()`.
+
+### `salutation()`
+
+Returns the full salutation, if detected.
 
 ```php
-Siapa::name('Dato\' Hariadi Bin Hinta', 'UTF-8')->givenName(false); // Hariadi Bin Hinta
+Siapa::name('Datuk Dr. Ir. Hariadi Hinta')->salutation(); // Datuk Dr. Ir.
 ```
 
-#### first
+### `givenName(bool $withMiddle = false)`
 
-`Siapa::first()`
-
-Returns the first name.
+Returns full name without salutation. Optionally excludes middle markers (e.g., bin, binti).
 
 ```php
-Siapa::name('Hariadi Hinta', 'UTF-8')->first(); // Hariadi
+Siapa::name("Dato' Hariadi Bin Hinta")->givenName();       // Hariadi Hinta
+Siapa::name("Dato' Hariadi Bin Hinta")->givenName(true);  // Hariadi Bin Hinta
 ```
 
-#### last
+### `first()`
 
-`Siapa::last()`
-
-Returns the last name.
+Returns the detected first name:
 
 ```php
-Siapa::name('Hariadi Hinta', 'UTF-8')->last(); // Hinta
+Siapa::name('Hariadi Hinta')->first(); // Hariadi
 ```
 
-#### gender
+### `last()`
 
-`Siapa::gender(boolean $short)`
-
-Returns the gender of name. Default param is `true` for short gender (M for Male and F for Female).
+Returns the last name (without bin/binti):
 
 ```php
-Siapa::name('Hariadi Hinta', 'UTF-8')->gender(false); // Male
+Siapa::name('Hariadi Bin Hinta')->last(); // Hinta
 ```
 
-Algorithm to detect malay name gender:
-- Default gender is Male
-- Check if `Binti`, `Bte.`, `Bte`, `Puan`, `Puan`, `Pn.`, `Bt.`, `Bt`, `A/P` exist in first name
-- If not found then we check for salutation if `Hajah`, `Hajjah`, `Hjh.`, `Puan`, `Pn.`, `Cik` exist.
-- If not found then we check for common female malay name in [`female.txt`](https://github.com/hariadi/Siapa/blob/master/src/data/female.txt) library
+### `gender(bool $short = true)`
 
+Detects gender. Returns `'M'`/`'F'` or `'Male'`/`'Female'`.
 
-## Tests
+```php
+Siapa::name('Pn. Nurul Hidayah')->gender();      // F
+Siapa::name('Pn. Nurul Hidayah')->gender(false); // Female
+```
 
-1. Clone the repository: git clone https://github.com/hariadi/Siapa.git
-2. From the project directory, tests can be ran using `phpunit`
+#### Gender Detection Heuristics
 
-## License
+1. Defaults to **Male**
+2. If last name contains any of:
 
-Released under the MIT License - see `LICENSE.txt` for details.
+   * `Binti`, `Bte`, `A/P`, `Pn.`, `Puan`, `Cik` etc.
+3. If salutation contains female honorifics
+4. If first name matches any name in [`female.txt`](src/Data/female.txt)
+
+---
+
+## ✅ Tests
+
+Run tests using PHPUnit:
+
+```bash
+git clone https://github.com/hariadi/Siapa.git
+cd Siapa
+vendor/bin/phpunit
+```
+
+---
+
+## 📄 License
+
+Released under the [MIT License](LICENSE.txt).

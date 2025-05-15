@@ -15,12 +15,12 @@
         }
     ],
     "require": {
-        "php": "^8.0|^8.1"
+        "php": "^8.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
-        "friendsofphp/php-cs-fixer": "^3.6",
-        "phpstan/phpstan": "^1.4"
+        "phpunit/phpunit": "^9.6",
+        "friendsofphp/php-cs-fixer": "^3.75",
+        "phpstan/phpstan": "^2.1"
     },
     "support": {
         "issues": "https://github.com/hariadi/Siapa/issues",
@@ -28,7 +28,10 @@
     },
     "autoload": {
         "psr-4": {
-        	"Hariadi\\Siapa\\": "src/"
+        	"Hariadi\\Siapa\\": "src/",
+			"Hariadi\\Siapa\\Parser\\": "src/Parser/",
+			"Hariadi\\Siapa\\Support\\": "src/Support/",
+			"Hariadi\\Siapa\\Data\\": "src/Data/"
         }
     },
     "autoload-dev": {
