@@ -15,7 +15,7 @@ class GenderGuesser
         }
 
         // check known female names from data file
-        $femaleNames = file(__DIR__.'/../Data/female.txt', FILE_IGNORE_NEW_LINES);
+        $femaleNames = file(dirname(__DIR__) . '/Data/female.txt', FILE_IGNORE_NEW_LINES);
 
         foreach ($femaleNames as $name) {
             if (str_contains($first, trim($name))) {
